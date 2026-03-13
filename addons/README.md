@@ -3,10 +3,10 @@
 ## Blusets for Ashita V4
 
 **Source Information**
-| Created by | Atom0s | https://github.com/atom0s |
-| :--- | :--- | :--- |
-| Hosted at | AshitaV4 Github | https://github.com/AshitaXI/Ashita-v4beta/tree/main/addons/blusets |
-| Version | 1.2 | |
+| Created by | [Atom0s](https://github.com/atom0s) |
+| :--- | :--- 
+| Hosted at | [AshitaV4 Github](https://github.com/AshitaXI/Ashita-v4beta/tree/main/addons/blusets) |
+| Version | 1.2 |
 
 **Changes**
 - Corrected an issue where the spells wouldn't always be added. There is a bug where it routinely fails to set a spell, then moves on to the next one
@@ -19,12 +19,12 @@
 ## Simplelog for Ashita V4
 
 **Source Information**
-| Created by | Spike2D | https://github.com/Spike2D |
-| :--- | :--- | :--- |
-| Hosted at | Spike2D Github | https://github.com/Spike2D/SimpleLog |
-| Version | 1.1 | |
+| Created by | [Spike2D](https://github.com/Spike2D) |
+| :--- | :--- |
+| Hosted at | [Spike2D Github](https://github.com/Spike2D/SimpleLog) |
+| Version | 1.1 |
 
-** Changes**
+**Changes**
 - Fixed the script to check and not crash or drop
 
 | File | Change(s) |
