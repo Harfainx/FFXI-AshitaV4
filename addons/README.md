@@ -22,7 +22,7 @@
 | Created by | Spike2D | https://github.com/Spike2D |
 | :--- | :--- | :--- |
 | Hosted at | Spike2D Github | https://github.com/Spike2D/SimpleLog |
-| Version | 0.10.1b | |
+| Version | 1.1 | |
 
 ** Changes**
 - Fixed the script to check and not crash or drop
