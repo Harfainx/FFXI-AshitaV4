@@ -1,3 +1,21 @@
+# My Addons
+
+## ChatLog ##
+
+| Created by | [Harfainx](https://github.com/Harfainx) |
+| :--- | :--- 
+| Version | 1.0.0 |
+
+** Information **
+A floating chat logger that can be customized in size, color, and filters. Does not currently capture unity messages, and probably some others.
+
+- Drag and drop to your location of choice
+- Adjust size by grabbing the bottom or sides
+- Right click the top bar to select filters
+- Customize colors and transparency inside the /config/addons//ChatLog/[name]/settings.lua file (unload, edit, load)
+
+-----
+
 # Information for updated addons
 
 ## Blusets for Ashita V4
