@@ -12,7 +12,8 @@ local default_settings = {
         collapsed = false,
         bgColor = { 0, 0, 0, 0.7 },
         innerBgColor = { 0, 0, 0, 0.5 },
-        fontScale = 1.0
+        fontScale = 1.0,
+        showPosition = true
     },
     chat = {
         maxMessages = 100,

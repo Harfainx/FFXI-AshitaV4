@@ -60,6 +60,17 @@ function M.DrawWindow(settings, messages)
         if not isCollapsed then
             -- Context Menu for toggling channels
             if imgui.BeginPopupContextWindow("ChatLogSettings", 1) then
+                imgui.Text("Settings");
+                imgui.Separator();
+                
+                -- Position Toggle
+                local showPosState = { winSettings.showPosition };
+                if imgui.Checkbox("Show Position", showPosState) then
+                    winSettings.showPosition = showPosState[1];
+                    settings.saveRequired = true;
+                end
+                
+                imgui.Separator();
                 imgui.Text("Channel Filters");
                 imgui.Separator();
                 
@@ -84,6 +95,22 @@ function M.DrawWindow(settings, messages)
                 DrawToggle("System", {123, 121});
                 
                 imgui.EndPopup();
+            end
+
+            -- Display Position
+            if winSettings.showPosition then
+                local entMgr = AshitaCore:GetMemoryManager():GetEntity();
+                local partyMgr = AshitaCore:GetMemoryManager():GetParty();
+                if entMgr and partyMgr then
+                    local pIdx = partyMgr:GetMemberTargetIndex(0);
+                    if pIdx ~= 0 then
+                        local px = entMgr:GetLocalPositionX(pIdx);
+                        local py = entMgr:GetLocalPositionY(pIdx);
+                        local pz = entMgr:GetLocalPositionZ(pIdx);
+                        imgui.Text(string.format("Pos: %.2f  %.2f  %.2f", px, py, pz));
+                        imgui.Separator();
+                    end
+                end
             end
 
             -- Create a child region for scrolling
