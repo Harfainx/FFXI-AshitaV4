@@ -11,7 +11,8 @@ local default_settings = {
         height = 300,
         collapsed = false,
         bgColor = { 0, 0, 0, 0.7 },
-        innerBgColor = { 0, 0, 0, 0.5 }
+        innerBgColor = { 0, 0, 0, 0.5 },
+        fontScale = 1.0
     },
     chat = {
         maxMessages = 100,
@@ -32,6 +33,7 @@ local default_settings = {
             [213] = true, -- Linkshell2 (Out)
             [214] = true, -- Linkshell2 (In)
             [123] = true, -- Console/Party System
+            [121] = true, -- Additional System messages (e.g. 16505 % 256)
             [15] = true   -- Emotes
         },
         -- Fallback colors for specific modes if needed, otherwise uses the text_in mode color
@@ -43,7 +45,8 @@ local default_settings = {
             [4] = { 0.9, 0.5, 0.9, 1.0 },       [12] = { 0.9, 0.5, 0.9, 1.0 },
             [10] = { 1.0, 0.5, 0.0, 1.0 },
             [3] = { 1.0, 0.7, 0.0, 1.0 },       [11] = { 1.0, 0.7, 0.0, 1.0 },
-            [123] = { 0.7, 0.7, 0.7, 1.0 },     [15] = { 0.7, 0.5, 0.7, 1.0 }
+            [123] = { 0.7, 0.7, 0.7, 1.0 },     [121] = { 0.7, 0.7, 0.7, 1.0 },
+            [15] = { 0.7, 0.5, 0.7, 1.0 }
         }
     }
 };

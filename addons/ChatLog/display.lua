@@ -81,7 +81,7 @@ function M.DrawWindow(settings, messages)
                 DrawToggle("Shout", {10});
                 DrawToggle("Yell", {3, 11});
                 DrawToggle("Emotes", {15});
-                DrawToggle("System", {123});
+                DrawToggle("System", {123, 121});
                 
                 imgui.EndPopup();
             end
@@ -93,21 +93,7 @@ function M.DrawWindow(settings, messages)
                 -- Render message
                 -- We can optionally set text colors based on mode here
                 -- Mode 9 = Say (White), 10 = Shout (Yellow), 13 = Party (Cyan), 14 = Linkshell (Green)
-                local color = {1.0, 1.0, 1.0, 1.0}; -- Default white
-                if msg.mode == 9 then color = {1.0, 1.0, 1.0, 1.0}; -- Say
-                elseif msg.mode == 10 then color = {1.0, 0.7, 0.7, 1.0}; -- Shout (salmon-ish)
-                elseif msg.mode == 11 then color = {1.0, 0.5, 0.8, 1.0}; -- Tell
-                elseif msg.mode == 13 then color = {0.4, 0.9, 1.0, 1.0}; -- Party (blue-ish)
-                elseif msg.mode == 14 then color = {0.4, 1.0, 0.4, 1.0}; -- Linkshell (green)
-                elseif msg.mode == 26 then color = {1.0, 0.8, 0.4, 1.0}; -- Yell (orange-ish)
-                elseif msg.mode == 214 then color = {0.6, 1.0, 0.6, 1.0}; -- LS2
-                end
-                
-                -- Allow custom color override from settings
-                if msg.color then
-                    color = msg.color;
-                end
-                
+                local color = msg.color or {1.0, 1.0, 1.0, 1.0};
                 imgui.PushStyleColor(ImGuiCol_Text, color);
                 imgui.TextWrapped(msg.text);
                 imgui.PopStyleColor(1);

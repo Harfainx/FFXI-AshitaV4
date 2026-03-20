@@ -1,11 +1,10 @@
 --[[
-* ChatLog Addon
-* Follows modular design similar to XIUI
+* ChatLog Addon for Ashita v4
 ]]--
 
 addon.name      = 'ChatLog';
 addon.author    = 'Harfainx';
-addon.version   = '1.0.0';
+addon.version   = '1.1.0';
 addon.desc      = 'Secondary chat window for important channels';
 addon.link      = '';
 
@@ -50,15 +49,17 @@ end);
 
 ashita.events.register('command', 'command_cb', function (e)
     local args = e.command:args();
-    if (#args == 0 or args[1] ~= '/chatlog') then
+    if (#args == 0 or args[1]:lower() ~= '/chatlog') then
         return;
     end
     
+    e.blocked = true;
     if (#args >= 2) then
-        if (args[2] == 'clear') then
+        local cmd = args[2]:lower();
+        if (cmd == 'clear') then
             data.Clear();
             print(chat.header(addon.name) .. chat.message('Chat history cleared.'));
-        elseif (args[2] == 'debug') then
+        elseif (cmd == 'debug') then
             config.debugMode = not config.debugMode;
             print(chat.header(addon.name) .. chat.message('Debug mode: ' .. tostring(config.debugMode)));
         else
@@ -66,9 +67,7 @@ ashita.events.register('command', 'command_cb', function (e)
             print(chat.header(addon.name) .. chat.message('  /chatlog clear  - Clears current chat history'));
             print(chat.header(addon.name) .. chat.message('  /chatlog debug  - Toggles debug mode to show chat modes'));
         end
-        e.blocked = true;
-    elseif (#args == 1) then
-        e.blocked = true;
+    else
         print(chat.header(addon.name) .. chat.message('Available commands:'));
         print(chat.header(addon.name) .. chat.message('  /chatlog clear  - Clears current chat history'));
         print(chat.header(addon.name) .. chat.message('  /chatlog debug  - Toggles debug mode to show chat modes'));
