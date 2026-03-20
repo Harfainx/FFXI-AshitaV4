@@ -4,7 +4,7 @@
 
 | Created by | [Harfainx](https://github.com/Harfainx) |
 | :--- | :--- 
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 
 ** Information **
 A floating chat logger that can be customized in size, color, and filters. Does not currently capture unity messages, and probably some others.
