@@ -4,7 +4,7 @@
 
 | Created by | [Harfainx](https://github.com/Harfainx) |
 | :--- | :--- 
-| Version | 1.1.0 |
+| Version | 1.1.2 |
 
 ** Information **
 A floating chat logger that can be customized in size, color, and filters. Does not currently capture unity messages, and probably some others.
@@ -13,6 +13,7 @@ A floating chat logger that can be customized in size, color, and filters. Does 
 - Adjust size by grabbing the bottom or sides
 - Right click the top bar to select filters
 - Customize colors and transparency inside the /config/addons//ChatLog/[name]/settings.lua file (unload, edit, load)
+- Added Position to the bar. Can toggle on and off by right clicking the top bar
 
 -----
 
