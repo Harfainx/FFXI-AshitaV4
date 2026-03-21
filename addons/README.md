@@ -7,6 +7,7 @@
 | Version | 2.0.0 |
 
 ** Information **
+
 A floating chat logger that can be customized in size, color, and filters. Does not currently capture unity messages, and probably some others.
 
 - Drag and drop to your location of choice
@@ -18,6 +19,9 @@ A floating chat logger that can be customized in size, color, and filters. Does 
 ![Main Window](/images/ChatLog/ChatLog-Main.png)
 ![Settings](/images/ChatLog/ChatLog-Settings.png)
 ![Chat Colors](/images/ChatLog/ChatLog-ChatColors.png)
+
+> [!IMPORTANT]
+> This does not disable your chats in the game's windows automatically. You have to go in and disable them yourself
 
 -----
 
