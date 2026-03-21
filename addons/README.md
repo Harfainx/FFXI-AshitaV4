@@ -15,6 +15,10 @@ A floating chat logger that can be customized in size, color, and filters. Does 
 - Menus to customize just about everything
 - Position and inventory count are available
 
+![Main Window](/images/ChatLog/ChatLog-Main.png)
+![Settings](/images/ChatLog/ChatLog-Settings.png)
+![Chat Colors](/images/ChatLog/ChatLog-ChatColors.png)
+
 -----
 
 # Information for updated addons
