@@ -4,7 +4,7 @@
 
 | Created by | [Harfainx](https://github.com/Harfainx) |
 | :--- | :--- 
-| Version | 2.0.0 |
+| Version | 2.0.1 |
 
 ** Information **
 
