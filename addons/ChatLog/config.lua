@@ -13,7 +13,16 @@ local default_settings = {
         bgColor = { 0, 0, 0, 0.7 },
         innerBgColor = { 0, 0, 0, 0.5 },
         fontScale = 1.0,
-        showPosition = true
+        showPosition = true,
+        showInventory = true,
+        posColor = { 1.0, 1.0, 1.0, 1.0 },
+        invTextColor = { 1.0, 1.0, 1.0, 1.0 },
+        invYellowThreshold = 65,
+        invRedThreshold = 85,
+        titleBarColor = { 0.7, 0.1, 0.1, 1.0 },
+        accentColor = { 1.0, 0.5, 0.0, 1.0 },
+        systemTextColor = { 1.0, 1.0, 1.0, 1.0 },
+        showInvThresholds = true
     },
     chat = {
         maxMessages = 100,

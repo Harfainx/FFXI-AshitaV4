@@ -46,10 +46,9 @@ function M.HandleIncomingText(e, settings, dataModule, configModule)
                         return ' {' .. phrase .. '} ';
                     end
                     
-                    -- Fallback to showing IDs if not in dictionary
                     return string.format(' {?%02X%02X%02X} ', b1, b2, b3);
                 end
-                return ' {?} ';
+                return '';
             elseif type == 0x07 then -- Item Link
                 if #d >= 5 then
                     local b1, b2, b3, b4 = string.byte(d, 2, 5); -- Offset 2-5
@@ -72,19 +71,20 @@ function M.HandleIncomingText(e, settings, dataModule, configModule)
             return ' {' .. (phrase or '???') .. '} ';
         end);
 
-        -- Remove Item Links (0x1F ... 0x1F) - Old style or fallback
-        cleanMsg = cleanMsg:gsub(string.char(0x1F) .. '.-' .. string.char(0x1F), '')
+        -- Remove Item Links/Formatting (0x1F + 1 byte or 0x1F ... 0x1F)
+        cleanMsg = cleanMsg:gsub('\x1F[\x01-\xFF]', '');
+        cleanMsg = cleanMsg:gsub('\x1F', '');
         
         -- Remove Color Tags (0x1E + 1 byte)
-        cleanMsg = cleanMsg:gsub(string.char(0x1E) .. '[%z\1-\255]', '')
+        cleanMsg = cleanMsg:gsub('\x1E[\x01-\xFF]', '')
         
         -- Remove special FFXI glyphs/control codes (0xEF + 1 byte)
-        cleanMsg = cleanMsg:gsub(string.char(0xEF) .. '[%z\1-\255]', '')
+        cleanMsg = cleanMsg:gsub('\xEF[\x01-\xFF]', '')
         
-        -- Remove Shift-JIS / Non-ASCII residuals (be careful not to wipe UTF-8 if we ever support it)
-        -- For now, keep it simple and only strip proven problematic bytes
-        cleanMsg = cleanMsg:gsub('\x81[%z\1-\255]', '') -- Shift-JIS punctuation
-        cleanMsg = cleanMsg:gsub('\x7F[%z\1-\255]', '') -- ASCII block
+        -- Remove Shift-JIS / Non-ASCII residuals
+        cleanMsg = cleanMsg:gsub('\x81[\x01-\xFF]', '') -- Shift-JIS punctuation
+        cleanMsg = cleanMsg:gsub('\x7F[\x01-\xFF]', '') -- ASCII block/terminator
+        cleanMsg = cleanMsg:gsub('\x7F', '')
         
         dataModule.AddMessage(baseMode, cleanMsg, settings.chat.customColors[baseMode]);
     end

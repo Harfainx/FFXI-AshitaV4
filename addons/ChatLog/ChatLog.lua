@@ -4,7 +4,7 @@
 
 addon.name      = 'ChatLog';
 addon.author    = 'Harfainx';
-addon.version   = '1.1.2';
+addon.version   = '2.0.0';
 addon.desc      = 'Secondary chat window for important channels';
 addon.link      = '';
 
