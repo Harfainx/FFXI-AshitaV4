@@ -119,6 +119,17 @@ function M.DrawWindow(settings, messages)
             ModeToggle("Say", {1, 9}); ModeToggle("Party", {5, 13}); ModeToggle("Linkshell", {6, 14});
             ModeToggle("LS2", {213, 214}); ModeToggle("Tell", {4, 12}); ModeToggle("Shout", {10});
             ModeToggle("Yell", {3, 11}); ModeToggle("Emotes", {15}); ModeToggle("System", {121, 123});
+            imgui.Separator();
+            local stPos = { winSettings.showPosition };
+            if imgui.Checkbox("Display Position", stPos) then
+                winSettings.showPosition = stPos[1];
+                settings.saveRequired = true;
+            end
+            local stInv = { winSettings.showInventory };
+            if imgui.Checkbox("Display Inventory", stInv) then
+                winSettings.showInventory = stInv[1];
+                settings.saveRequired = true;
+            end
             
             imgui.EndPopup();
         end
