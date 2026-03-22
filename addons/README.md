@@ -4,7 +4,7 @@
 
 | Created by | [Harfainx](https://github.com/Harfainx) |
 | :--- | :--- 
-| Version | 2.0.1 |
+| Version | 2.1.0 |
 
 ** Information **
 
@@ -14,14 +14,16 @@ A floating chat logger that can be customized in size, color, and filters. Does 
 - Adjust size by grabbing the bottom or sides
 - Right click the top bar to select filters
 - Menus to customize just about everything
-- Position and inventory count are available
+- Position, inventory, experience, JP, and merit counts are available
+- Auto blocking messages in the game's window logs has been enabled with a new "Log Blocking" tab for Limit Points, EXP, Capacity Points, Gil, Merit Points, Job Points, EXP/CP/LP Chains, each type of chat, system messages, and RoE messages. No need to disable anything manually in game (Big thanks to Genesis for the blocking logic in RoEBeGone)
 
-![Main Window](/images/ChatLog/ChatLog-Main.png)
-![Settings](/images/ChatLog/ChatLog-Settings.png)
-![Chat Colors](/images/ChatLog/ChatLog-ChatColors.png)
+| Screenshot | |
+| :--- | :--- 
+| Main window | ![Main Window](/images/ChatLog/ChatLog-Main.png) |
+| Appearance Settings | ![Settings](/images/ChatLog/ChatLog-Settings.png) |
+| Color Settings | ![Chat Colors](/images/ChatLog/ChatLog-ChatColors.png) |
+| Log Blocking Settings | ![Chat Colors](/images/ChatLog/ChatLog-LogBlocking.png) |
 
-> [!IMPORTANT]
-> This does not disable your chats in the game's windows automatically. You have to go in and disable them yourself
 
 -----
 
