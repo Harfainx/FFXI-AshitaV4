@@ -78,15 +78,38 @@ function M.HandleIncomingText(e, settings, dataModule, configModule)
         -- Remove Color Tags (0x1E + 1 byte)
         cleanMsg = cleanMsg:gsub('\x1E[\x01-\xFF]', '')
         
-        -- Remove special FFXI glyphs/control codes (0xEF + 1 byte)
+        -- Remove special FFXI glyphs/control codes
         cleanMsg = cleanMsg:gsub('\xEF[\x01-\xFF]', '')
+        cleanMsg = cleanMsg:gsub('\x07', ' ') -- Replace break markers with space
         
         -- Remove Shift-JIS / Non-ASCII residuals
         cleanMsg = cleanMsg:gsub('\x81[\x01-\xFF]', '') -- Shift-JIS punctuation
+        cleanMsg = cleanMsg:gsub('\x87[\x01-\xFF]', '') -- Custom glyphs (e.g. 87 B2)
         cleanMsg = cleanMsg:gsub('\x7F[\x01-\xFF]', '') -- ASCII block/terminator
         cleanMsg = cleanMsg:gsub('\x7F', '')
         
         dataModule.AddMessage(baseMode, cleanMsg, settings.chat.customColors[baseMode]);
+    end
+
+    -- Handle Chat Blocking (cancelling the game's text event)
+    local baseMode = e.mode % 256;
+    if settings.chat.blockedModes and settings.chat.blockedModes[baseMode] then
+        e.blocked = true;
+    end
+
+    -- Handle Advanced Blocking (Patterns)
+    if baseMode == 127 and settings.chat.blockRoE then
+        e.blocked = true;
+    elseif baseMode == 131 or baseMode == 121 then
+        local msg = e.message:strip_colors():strip_translate(true):lower();
+        local p = settings.chat.blockPatterns;
+        if p.exp and msg:contains('gains') and msg:contains('experience points') then e.blocked = true; end
+        if p.lp and msg:contains('gains') and msg:contains('limit points') then e.blocked = true; end
+        if p.cp and msg:contains('gains') and (msg:contains('capacity points') or msg:contains('capacity point')) then e.blocked = true; end
+        if p.gil and msg:contains('obtains') and msg:contains('gil') then e.blocked = true; end
+        if p.merit and msg:contains('earns a merit point') then e.blocked = true; end
+        if p.jp and msg:contains('earns a job point') then e.blocked = true; end
+        if p.chains and msg:contains('chain #') then e.blocked = true; end
     end
 end
 

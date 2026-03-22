@@ -15,8 +15,15 @@ local default_settings = {
         fontScale = 1.0,
         showPosition = true,
         showInventory = true,
+        showEXP = true,
+        showJP = true,
+        showMerits = true,
         posColor = { 1.0, 1.0, 1.0, 1.0 },
         invTextColor = { 1.0, 1.0, 1.0, 1.0 },
+        expColor = { 0.7, 0.9, 0.7, 1.0 },
+        expTextColor = { 1.0, 1.0, 1.0, 1.0 },
+        jpColor = { 1.0, 1.0, 1.0, 1.0 },
+        meritColor = { 1.0, 1.0, 1.0, 1.0 },
         invYellowThreshold = 65,
         invRedThreshold = 85,
         titleBarColor = { 0.7, 0.1, 0.1, 1.0 },
@@ -44,7 +51,8 @@ local default_settings = {
             [214] = true, -- Linkshell2 (In)
             [123] = true, -- Console/Party System
             [121] = true, -- Additional System messages (e.g. 16505 % 256)
-            [15] = true   -- Emotes
+            [15] = true,  -- Emotes (Standard)
+            [7] = true    -- Emotes (Alternative)
         },
         -- Fallback colors for specific modes if needed, otherwise uses the text_in mode color
         customColors = {
@@ -55,8 +63,20 @@ local default_settings = {
             [4] = { 0.9, 0.5, 0.9, 1.0 },       [12] = { 0.9, 0.5, 0.9, 1.0 },
             [10] = { 1.0, 0.5, 0.0, 1.0 },
             [3] = { 1.0, 0.7, 0.0, 1.0 },       [11] = { 1.0, 0.7, 0.0, 1.0 },
-            [123] = { 0.7, 0.7, 0.7, 1.0 },     [121] = { 0.7, 0.7, 0.7, 1.0 },
-            [15] = { 0.7, 0.5, 0.7, 1.0 }
+            [121] = { 0.7, 0.7, 0.7, 1.0 },     [15] = { 0.7, 0.5, 0.7, 1.0 },
+            [7] = { 0.7, 0.5, 0.7, 1.0 }
+        },
+        blockedModes = {
+            [1] = false, [9] = false, [5] = false, [13] = false,
+            [6] = false, [14] = false, [10] = false, [4] = false,
+            [12] = false, [3] = false, [11] = false, [213] = false,
+            [214] = false, [123] = false, [121] = false, [15] = false,
+            [7] = false
+        },
+        blockRoE = false,
+        blockPatterns = {
+            lp = false, exp = false, cp = false, gil = false,
+            merit = false, jp = false, chains = false
         }
     }
 };

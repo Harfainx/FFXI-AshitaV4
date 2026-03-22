@@ -60,9 +60,17 @@ function M.DrawWindow(settings, messages)
         local aHover = { math.min(1.0, aCol[1] * 1.2), math.min(1.0, aCol[2] * 1.2), math.min(1.0, aCol[3] * 1.2), aCol[4] };
         if ImGuiCol_SliderGrab then imgui.PushStyleColor(ImGuiCol_SliderGrab, aCol); popCount = popCount + 1; end
         if ImGuiCol_SliderGrabActive then imgui.PushStyleColor(ImGuiCol_SliderGrabActive, aHover); popCount = popCount + 1; end
+        if ImGuiCol_ScrollbarGrab then imgui.PushStyleColor(ImGuiCol_ScrollbarGrab, aCol); popCount = popCount + 1; end
+        if ImGuiCol_ScrollbarGrabHovered then imgui.PushStyleColor(ImGuiCol_ScrollbarGrabHovered, aHover); popCount = popCount + 1; end
+        if ImGuiCol_ScrollbarGrabActive then imgui.PushStyleColor(ImGuiCol_ScrollbarGrabActive, aCol); popCount = popCount + 1; end
         if ImGuiCol_CheckMark then imgui.PushStyleColor(ImGuiCol_CheckMark, aCol); popCount = popCount + 1; end
-        imgui.PushStyleColor(16, aHover); -- Re-push Index 16 with accent hover
-        popCount = popCount + 1;
+        
+        -- Manual Scrollbar Indices (14=Bg, 15=Grab, 16=GrabHovered, 17=GrabActive)
+        imgui.PushStyleColor(14, {0,0,0,0}); -- Transparent BG
+        imgui.PushStyleColor(15, aCol);
+        imgui.PushStyleColor(16, aHover);
+        imgui.PushStyleColor(17, aCol);
+        popCount = popCount + 4;
     end
     
     -- System Colors
@@ -118,7 +126,8 @@ function M.DrawWindow(settings, messages)
             
             ModeToggle("Say", {1, 9}); ModeToggle("Party", {5, 13}); ModeToggle("Linkshell", {6, 14});
             ModeToggle("LS2", {213, 214}); ModeToggle("Tell", {4, 12}); ModeToggle("Shout", {10});
-            ModeToggle("Yell", {3, 11}); ModeToggle("Emotes", {15}); ModeToggle("System", {121, 123});
+            ModeToggle("Yell", {3, 11}); ModeToggle("Emotes", {15, 7}); ModeToggle("System", {123});
+            ModeToggle("Secondary System", {121});
             imgui.Separator();
             local stPos = { winSettings.showPosition };
             if imgui.Checkbox("Display Position", stPos) then
@@ -130,43 +139,99 @@ function M.DrawWindow(settings, messages)
                 winSettings.showInventory = stInv[1];
                 settings.saveRequired = true;
             end
+            local stEXP = { winSettings.showEXP };
+            if imgui.Checkbox("Display EXP", stEXP) then
+                winSettings.showEXP = stEXP[1];
+                settings.saveRequired = true;
+            end
+            local stJP = { winSettings.showJP };
+            if imgui.Checkbox("Display Job Points", stJP) then
+                winSettings.showJP = stJP[1];
+                settings.saveRequired = true;
+            end
+            local stMP = { winSettings.showMerits };
+            if imgui.Checkbox("Display Merit Points", stMP) then
+                winSettings.showMerits = stMP[1];
+                settings.saveRequired = true;
+            end
             
             imgui.EndPopup();
         end
 
-        -- Position/Inventory Bar
-        if winSettings.showPosition or winSettings.showInventory then
-            local drawn = false;
-            if winSettings.showPosition then
-                local ent = AshitaCore:GetMemoryManager():GetEntity();
-                local part = AshitaCore:GetMemoryManager():GetParty();
-                if ent and part then
-                    local idx = part:GetMemberTargetIndex(0);
-                    if idx ~= 0 then
-                        imgui.TextColored(winSettings.posColor, string.format("Pos: %.2f %.2f %.2f", ent:GetLocalPositionX(idx), ent:GetLocalPositionY(idx), ent:GetLocalPositionZ(idx)));
-                        drawn = true;
-                    end
+        -- Status Bar Rows
+        local row1 = {};
+        local row2 = {};
+
+        -- Position (Row 1)
+        if winSettings.showPosition then
+            local ent = AshitaCore:GetMemoryManager():GetEntity();
+            local part = AshitaCore:GetMemoryManager():GetParty();
+            if ent and part then
+                local idx = part:GetMemberTargetIndex(0);
+                if idx ~= 0 then
+                    table.insert(row1, { color = winSettings.posColor, text = string.format("Pos: %.2f %.2f %.2f", ent:GetLocalPositionX(idx), ent:GetLocalPositionY(idx), ent:GetLocalPositionZ(idx)) });
                 end
             end
-            if winSettings.showInventory then
-                local inv = AshitaCore:GetMemoryManager():GetInventory();
-                if inv then
-                    if drawn then imgui.SameLine(); imgui.Text(" | "); imgui.SameLine(); end
-                    local c, m = inv:GetContainerCount(0), inv:GetContainerCountMax(0);
-                    local perc = (m > 0) and (c/m*100) or 0;
-                    local ic = winSettings.invTextColor;
-                    if winSettings.showInvThresholds then
-                        ic = {0.1, 1, 0.1, 1}; -- Green
-                        if perc >= (winSettings.invRedThreshold or 85) then ic = {1, 0.1, 0.1, 1};
-                        elseif perc >= (winSettings.invYellowThreshold or 65) then ic = {1, 1, 0.1, 1}; end
-                    end
-                    imgui.TextColored(winSettings.invTextColor, "Inv: "); imgui.SameLine();
-                    imgui.TextColored(ic, string.format("%d/%d", c, m));
-                    drawn = true;
-                end
-            end
-            if drawn then imgui.Separator(); end
         end
+
+        -- Inventory (Row 1)
+        if winSettings.showInventory then
+            local inv = AshitaCore:GetMemoryManager():GetInventory();
+            if inv then
+                local c, m = inv:GetContainerCount(0), inv:GetContainerCountMax(0);
+                local perc = (m > 0) and (c/m*100) or 0;
+                local ic = winSettings.invTextColor;
+                if winSettings.showInvThresholds then
+                    ic = {0.1, 1, 0.1, 1}; -- Green
+                    if perc >= (winSettings.invRedThreshold or 85) then ic = {1, 0.1, 0.1, 1};
+                    elseif perc >= (winSettings.invYellowThreshold or 65) then ic = {1, 1, 0.1, 1}; end
+                end
+                table.insert(row1, { labelColor = winSettings.invTextColor, label = "Inv: ", color = ic, text = string.format("%d/%d", c, m) });
+            end
+        end
+
+        -- Row 2 Items
+        if winSettings.showEXP then
+            local player = AshitaCore:GetMemoryManager():GetPlayer();
+            if player then
+                local expCur = player:GetExpCurrent();
+                local expNeed = player:GetExpNeeded();
+                table.insert(row2, { color = winSettings.expColor, text = string.format("EXP: %d/%d", expCur, expCur + expNeed) });
+            end
+        end
+        if winSettings.showJP then
+            local player = AshitaCore:GetMemoryManager():GetPlayer();
+            if player then
+                table.insert(row2, { color = winSettings.jpColor, text = string.format("JP: %d", player:GetJobPoints(player:GetMainJob())) });
+            end
+        end
+        if winSettings.showMerits then
+            local player = AshitaCore:GetMemoryManager():GetPlayer();
+            if player then
+                table.insert(row2, { color = winSettings.meritColor, text = string.format("Merits: %d", player:GetMeritPoints()) });
+            end
+        end
+
+        -- Render Rows
+        local function renderRow(items)
+            if #items == 0 then return false; end
+            for i, item in ipairs(items) do
+                if i > 1 then
+                    imgui.SameLine();
+                    imgui.Text(" | ");
+                    imgui.SameLine();
+                end
+                if item.label then
+                    imgui.TextColored(item.labelColor, item.label or "");
+                    imgui.SameLine(0, 0);
+                end
+                imgui.TextColored(item.color, (item.text or ""):gsub("%%", "%%%%"));
+            end
+            return true;
+        end
+
+        if renderRow(row1) then imgui.Separator(); end
+        if renderRow(row2) then imgui.Separator(); end
 
         -- Messages region
         imgui.BeginChild("ChatMessagesRegion");
