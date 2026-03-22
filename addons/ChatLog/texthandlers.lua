@@ -110,6 +110,7 @@ function M.HandleIncomingText(e, settings, dataModule, configModule)
         if p.merit and msg:contains('earns a merit point') then e.blocked = true; end
         if p.jp and msg:contains('earns a job point') then e.blocked = true; end
         if p.chains and msg:contains('chain #') then e.blocked = true; end
+        if p.sparks and msg:contains('sparks of eminence') then e.blocked = true; end
     end
 end
 

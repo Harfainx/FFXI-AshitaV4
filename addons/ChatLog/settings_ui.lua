@@ -242,6 +242,7 @@ function M.Draw(settings)
                         settings.chat.blockRoE = roe[1];
                         settings.saveRequired = true;
                     end
+                    PatternToggle("Block Sparks Messages", "sparks");
                     imgui.EndChild();
                 end
                 imgui.EndTabItem();

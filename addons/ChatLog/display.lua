@@ -195,8 +195,8 @@ function M.DrawWindow(settings, messages)
             local player = AshitaCore:GetMemoryManager():GetPlayer();
             if player then
                 local expCur = player:GetExpCurrent();
-                local expNeed = player:GetExpNeeded();
-                table.insert(row2, { color = winSettings.expColor, text = string.format("EXP: %d/%d", expCur, expCur + expNeed) });
+                local expTotal = player:GetExpNeeded();
+                table.insert(row2, { color = winSettings.expColor, text = string.format("EXP: %d/%d", expCur, expTotal) });
             end
         end
         if winSettings.showJP then

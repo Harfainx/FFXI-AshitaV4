@@ -76,7 +76,7 @@ local default_settings = {
         blockRoE = false,
         blockPatterns = {
             lp = false, exp = false, cp = false, gil = false,
-            merit = false, jp = false, chains = false
+            merit = false, jp = false, chains = false, sparks = false
         }
     }
 };
