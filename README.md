@@ -1,7 +1,9 @@
 # Ashita V4 addons and updates
 Updates, fixes, and custom AshitaV4 addons
 
-##  I've added my first original addon. This is no longer just updates/fixes. I have a lot more in mind that I'd like to correct, so this might be quickly... Or I'll get busy and not update it for months.
+###  My addons are listed in the Releases section. Find the one you want and download that. Only the newest release of each of my addons will remain available
 
-### Please read the README.md file in each main folder for details
+Addons that I fixed but didn't make are currently both in the "Intial release" download. Simply take whichever you want to use out of the zip
+
+### Please read the readme in the Addons folder for specifics and screenshots
 <br/><br/>
