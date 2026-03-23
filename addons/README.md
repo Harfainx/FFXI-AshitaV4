@@ -24,6 +24,27 @@ A floating chat logger that can be customized in size, color, and filters. Does 
 | Color Settings | ![Chat Colors](/images/ChatLog/ChatLog-ChatColors.png) |
 | Log Blocking Settings | ![Chat Colors](/images/ChatLog/ChatLog-LogBlocking.png) |
 
+## ItemLog ##
+
+| Created by | [Harfainx](https://github.com/Harfainx) |
+| :--- | :--- 
+| Version | 1.0.0 |
+
+** Information **
+
+A floating item logger that watches inventory, treasure pool, and recent drops.
+
+- Drag and drop to your location of choice
+- Adjust size by grabbing the bottom or sides
+- Right click the top bar to select option
+- Menu to customize just about everything
+- Pool only shows when active to save space, and always shows everything in it (dynamically expands)
+- Item drop history can be adjusted 1-50
+- Game log window blocking for Item Drop and Item Obtained messages
+
+| Screenshot | |
+| :--- | :--- 
+| Main | ![Main Window](/images/ItemLog/ItemLog-MainAndSettings.png) |
 
 -----
 
