@@ -2,6 +2,7 @@ local M = {};
 
 function M.HandleIncomingText(e, settings, dataModule)
     if e.injected then return end;
+    if not e.message then return end;
 
     local baseMode = e.mode % 256;
     local msg = e.message:strip_colors():strip_translate(true);

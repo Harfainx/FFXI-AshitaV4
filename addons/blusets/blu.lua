@@ -163,6 +163,9 @@ function blu.get_spells()
     if (ptr == 0) then
         return T{ };
     end
+    if (blu.offset[0] == 0) then
+        return T{ };
+    end
     return T(ashita.memory.read_array((ptr + blu.offset[0]) + (blu.is_blu_main() and 0x04 or 0xA0), 0x14));
 end
 

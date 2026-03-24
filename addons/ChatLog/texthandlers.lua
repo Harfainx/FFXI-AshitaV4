@@ -14,6 +14,7 @@ function M.HandleIncomingText(e, settings, dataModule, configModule)
     -- Prevent infinite loops where Ashita 'print' generates a text_in event,
     -- which triggers another print(), crashing the game instantly via stack overflow.
     if e.injected then return end;
+    if e.message == nil then return end;
     if string.find(e.message, '%[ChatLog Debug%]') then return end;
 
     if configModule.debugMode == true then
