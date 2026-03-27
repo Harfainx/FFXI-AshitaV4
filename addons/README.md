@@ -4,7 +4,7 @@
 
 | Created by | [Harfainx](https://github.com/Harfainx) |
 | :--- | :--- 
-| Version | 2.1.1 |
+| Version | 2.2.0 |
 
 ** Information **
 
@@ -16,6 +16,8 @@ A floating chat logger that can be customized in size, color, and filters. Does 
 - Menus to customize just about everything
 - Position, inventory, experience, JP, and merit counts are available
 - Auto blocking messages in the game's window logs has been enabled with a new "Log Blocking" tab for Limit Points, EXP, Capacity Points, Gil, Merit Points, Job Points, EXP/CP/LP Chains, each type of chat, system messages, RoE messages, and Sparks of Eminence messages. No need to disable anything manually in game (Big thanks to Genesis for the blocking logic in RoEBeGone)
+- Autotranslate for items and key items added
+- Timestamps can be toggled on and off
 
 | Screenshot | |
 | :--- | :--- 
@@ -28,7 +30,7 @@ A floating chat logger that can be customized in size, color, and filters. Does 
 
 | Created by | [Harfainx](https://github.com/Harfainx) |
 | :--- | :--- 
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 
 ** Information **
 
