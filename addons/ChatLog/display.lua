@@ -154,6 +154,12 @@ function M.DrawWindow(settings, messages)
                 winSettings.showMerits = stMP[1];
                 settings.saveRequired = true;
             end
+            imgui.Separator();
+            local stTime = { settings.chat.showTimestamps };
+            if imgui.Checkbox("Display Timestamps", stTime) then
+                settings.chat.showTimestamps = stTime[1];
+                settings.saveRequired = true;
+            end
             
             imgui.EndPopup();
         end

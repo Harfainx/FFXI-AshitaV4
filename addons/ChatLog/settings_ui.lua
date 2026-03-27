@@ -136,6 +136,14 @@ function M.Draw(settings)
                 if imgui.ColorEdit4("Merit Color", settings.window.meritColor) then settings.saveRequired = true; end
 
                 imgui.Separator();
+                imgui.Text("Chat");
+                local st = { settings.chat.showTimestamps };
+                if imgui.Checkbox("Display Timestamps", st) then 
+                    settings.chat.showTimestamps = st[1]; 
+                    settings.saveRequired = true; 
+                end
+
+                imgui.Separator();
                 imgui.Text("Alert Thresholds");
                 local showThresh = { settings.window.showInvThresholds };
                 if imgui.Checkbox("Use Alert Thresholds", showThresh) then settings.window.showInvThresholds = showThresh[1]; settings.saveRequired = true; end

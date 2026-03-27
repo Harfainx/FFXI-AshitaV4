@@ -39,7 +39,7 @@ function M.ReadPoolFromMemory()
             table.insert(newPool, {
                 slot = slot,
                 id = item.ItemId,
-                name = resItem and resItem.Name[1] or "Unknown Item",
+                name = (resItem and resItem.Name[1] or "Unknown Item"):lower():gsub("(%a)([%w']*)", function(a,b) return string.upper(a)..b end),
                 bidder = item.WinningEntityName or "",
                 bid = item.WinningLot or 0,
                 myLot = item.Lot or 0

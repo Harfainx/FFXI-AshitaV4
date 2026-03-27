@@ -1,5 +1,6 @@
 local M = {};
 local atData = require('at_data');
+local kiData = require('ki_data');
 
 -- Helper to convert FFXI chat colors
 local function GetColorFromMode(mode)
@@ -49,13 +50,43 @@ function M.HandleIncomingText(e, settings, dataModule, configModule)
                     return string.format(' {?%02X%02X%02X} ', b1, b2, b3);
                 end
                 return '';
-            elseif type == 0x07 then -- Item Link
-                if #d >= 5 then
-                    local b1, b2, b3, b4 = string.byte(d, 2, 5); -- Offset 2-5
-                    local id = bit.bor(bit.lshift(b1, 24), bit.lshift(b2, 16), bit.lshift(b3, 8), b4);
+            elseif type == 0x07 or type == 0x09 or type == 0x0A then -- Item
+                local id = 0;
+                if #d >= 5 then -- Full Link
+                    local b1, b2, b3, b4 = string.byte(d, 2, 5);
+                    id = bit.bor(bit.lshift(b1, 24), bit.lshift(b2, 16), bit.lshift(b3, 8), b4);
+                elseif #d >= 3 then -- Auto-Translate Item
+                    local b2, b3 = string.byte(d, 2, 3);
+                    if type == 0x09 then b2 = 0; end
+                    if type == 0x0A then b3 = 0; end
+                    id = (b2 * 256) + b3;
+                end
+                
+                if id > 0 then
                     local item = AshitaCore:GetResourceManager():GetItemById(id);
                     if item then
-                        return ' [' .. item.Name[1] .. '] ';
+                        local name = item.Name[1];
+                        if (not name or name == '' or name == '.') then
+                            name = item.LogNameSingular[1];
+                        end
+                        if (not name or name == '' or name == '.') then
+                            name = 'Item #' .. id;
+                        end
+                        return ' [' .. name .. '] ';
+                    end
+                end
+            elseif type == 0x13 or type == 0x15 or type == 0x16 then -- Key Item
+                if #d >= 3 then
+                    local b2, b3 = string.byte(d, 2, 3);
+                    if type == 0x15 then b2 = 0; end
+                    if type == 0x16 then b3 = 0; end
+                    local id = (b2 * 256) + b3;
+                    local name = AshitaCore:GetResourceManager():GetString('keyitems', id);
+                    if (not name or name == '') then
+                        name = kiData[id];
+                    end
+                    if name then
+                        return ' [' .. name .. '] ';
                     end
                 end
             end
@@ -87,6 +118,11 @@ function M.HandleIncomingText(e, settings, dataModule, configModule)
         cleanMsg = cleanMsg:gsub('\x87[\x01-\xFF]', '') -- Custom glyphs (e.g. 87 B2)
         cleanMsg = cleanMsg:gsub('\x7F[\x01-\xFF]', '') -- ASCII block/terminator
         cleanMsg = cleanMsg:gsub('\x7F', '')
+        
+        if settings.chat.showTimestamps then
+            local t = os.date('%H:%M:%S');
+            cleanMsg = string.format('[%s] %s', t, cleanMsg);
+        end
         
         dataModule.AddMessage(baseMode, cleanMsg, settings.chat.customColors[baseMode]);
     end

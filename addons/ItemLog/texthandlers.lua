@@ -25,7 +25,7 @@ function M.HandleIncomingText(e, settings, dataModule)
             if isSelf or settings.log.showOtherDrops then
                 if settings.window.showDrops then
                     -- Title case the item name for consistency with pool
-                    local titleItem = item:gsub("(%l)(%w*)", function(a,b) return string.upper(a)..b end);
+                    local titleItem = item:lower():gsub("(%a)([%w']*)", function(a,b) return string.upper(a)..b end);
                     
                     local formatted = titleItem;
                     if not isSelf then

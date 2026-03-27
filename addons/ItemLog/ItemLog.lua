@@ -5,7 +5,7 @@
 
 addon.name      = 'ItemLog';
 addon.author    = 'Harfainx';
-addon.version   = '1.0.0';
+addon.version   = '1.1.0';
 addon.desc      = 'Tracks treasure pools and recent item drops';
 addon.link      = '';
 

@@ -33,6 +33,7 @@ local default_settings = {
     },
     chat = {
         maxMessages = 100,
+        showTimestamps = true,
         -- Chat modes config
         -- 9=Say, 10=Shout, 11=Tell(incoming?), 12=Tell(outgoing?), 13=Party, 14=Linkshell, 26=Yell, 214=Linkshell2 (Mode might vary, user can edit these if needed)
         enabledModes = {
