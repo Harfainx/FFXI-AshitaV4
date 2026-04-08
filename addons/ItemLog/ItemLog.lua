@@ -4,7 +4,7 @@
 ]]--
 
 addon.name      = 'ItemLog';
-addon.author    = 'Antigravity';
+addon.author    = 'Harfainx';
 addon.version   = '1.2.0';
 addon.desc      = 'Tracks treasure pools and recent item drops';
 addon.link      = '';
