@@ -46,8 +46,8 @@ function M.DrawSettings(settings)
         if ImGuiCol_ButtonHovered then imgui.PushStyleColor(ImGuiCol_ButtonHovered, hoverCol); popCount = popCount + 1; end
         if ImGuiCol_ButtonActive then imgui.PushStyleColor(ImGuiCol_ButtonActive, tCol); popCount = popCount + 1; end
         
-        -- Surgical strikes for indices (36=TabUnfocused, 25=ResizeGrip, etc.)
-        local indices = { 21, 22, 23, 24, 25, 26, 36, 42, 43, 44, 55, 56, 57, 58, 59 };
+        -- Surgical strikes for indices (7=FrameBg, 25-27=ResizeGrip, 28-32=Tabs, etc.)
+        local indices = { 7, 8, 9, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 36, 42, 43, 44, 55, 56, 57, 58, 59 };
         for _, idx in ipairs(indices) do
             imgui.PushStyleColor(idx, tCol);
             popCount = popCount + 1;
@@ -86,21 +86,19 @@ function M.DrawSettings(settings)
                 end
                 TransSlider("Title Bar##Alpha", winSettings.titleBarColor);
                 TransSlider("Accent##Alpha", winSettings.accentColor);
-                TransSlider("System Text##Alpha", winSettings.systemTextColor);
-                TransSlider("Inventory##Alpha", winSettings.inventoryColor);
                 TransSlider("Window##Alpha", winSettings.windowColor);
                 TransSlider("Inner##Alpha", winSettings.innerColor);
+                TransSlider("System Text##Alpha", winSettings.systemTextColor);
 
                 imgui.Spacing();
                 -- 2. Colors Section
                 imgui.Text("Colors");
                 imgui.Separator();
-                imgui.ColorEdit3("Title Bar##Color", winSettings.titleBarColor);
-                imgui.ColorEdit3("Accent##Color", winSettings.accentColor);
-                imgui.ColorEdit3("System Text##Color", winSettings.systemTextColor);
-                imgui.ColorEdit3("Inventory##Color", winSettings.inventoryColor);
-                imgui.ColorEdit3("Window##Color", winSettings.windowColor);
-                imgui.ColorEdit3("Inner##Color", winSettings.innerColor);
+                imgui.ColorEdit4("Title Bar##Color", winSettings.titleBarColor);
+                imgui.ColorEdit4("Accent##Color", winSettings.accentColor);
+                imgui.ColorEdit4("Window##Color", winSettings.windowColor);
+                imgui.ColorEdit4("Inner##Color", winSettings.innerColor);
+                imgui.ColorEdit4("System Text##Color", winSettings.systemTextColor);
 
                 imgui.Spacing();
                 -- 3. Drop Display Section
@@ -153,6 +151,12 @@ function M.DrawSettings(settings)
                 imgui.EndTabItem();
             end
             imgui.EndTabBar();
+        end
+        
+        imgui.Separator();
+        if imgui.Button("Save Settings") then
+            local config = require('config');
+            config.save();
         end
         imgui.End();
     end

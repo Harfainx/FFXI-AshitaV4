@@ -19,7 +19,9 @@ function M.HandleIncomingText(e, settings, dataModule)
     if baseMode == 127 then
         local name, item = msg:match('^(.-) obtains an? (.-)%.$');
         if name and item then
-            local playerName = AshitaCore:GetMemoryManager():GetParty():GetMemberName(0);
+            local party = AshitaCore:GetMemoryManager():GetParty();
+            if not party then return end;
+            local playerName = party:GetMemberName(0);
             local isSelf = (name == 'You' or name == playerName);
 
             if isSelf or settings.log.showOtherDrops then

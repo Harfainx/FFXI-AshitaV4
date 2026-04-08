@@ -74,6 +74,15 @@ function M.DrawWindow(settings, dataModule)
 
     local mainFlags = 32; -- ImGuiWindowFlags_NoCollapse
     if imgui.Begin("ItemLog", true, mainFlags) then
+        -- Sync Position/Size back to settings so window position persists across reloads
+        local pos = {imgui.GetWindowPos()};
+        local size = {imgui.GetWindowSize()};
+        if pos[1] ~= winSettings.x or pos[2] ~= winSettings.y or size[1] ~= winSettings.width or size[2] ~= winSettings.height then
+            winSettings.x, winSettings.y = pos[1], pos[2];
+            winSettings.width, winSettings.height = size[1], size[2];
+            settings.saveRequired = true;
+        end
+
         -- Right-Click Menu
         if imgui.BeginPopupContextWindow() then
             if imgui.MenuItem("Settings...") then settingsUI.Open(); end
@@ -94,9 +103,13 @@ function M.DrawWindow(settings, dataModule)
             local color = winSettings.inventoryColor or { 1, 1, 1, 1 };
             
             if winSettings.showInvThresholds and m > 0 then
+                color = { 0.1, 1.0, 0.1, 1.0 }; -- Default Green
                 local pct = (c / m) * 100;
-                if pct >= winSettings.invRedThreshold then color = { 1, 0.3, 0.3, 1 };
-                elseif pct >= winSettings.invYellowThreshold then color = { 1, 1, 0.3, 1 }; end
+                if pct >= (winSettings.invRedThreshold or 85) then 
+                    color = { 1.0, 0.1, 0.1, 1.0 };
+                elseif pct >= (winSettings.invYellowThreshold or 65) then 
+                    color = { 1.0, 1.0, 0.1, 1.0 }; 
+                end
             end
             
             imgui.TextColored(winSettings.inventoryColor or { 1, 1, 1, 1 }, "Inv: ");
@@ -145,6 +158,12 @@ function M.DrawWindow(settings, dataModule)
     settingsUI.DrawSettings(settings);
 
     if popCount > 0 then imgui.PopStyleColor(popCount); end
+
+    -- Auto-save if window was moved/resized
+    if settings.saveRequired then
+        settings.saveRequired = false;
+        require('config').save();
+    end
 end
 
 return M;

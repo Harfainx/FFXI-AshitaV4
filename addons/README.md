@@ -4,7 +4,7 @@
 
 | Created by | [Harfainx](https://github.com/Harfainx) |
 | :--- | :--- 
-| Version | 2.2.0 |
+| Version | 2.3.0 |
 
 ** Information **
 
@@ -14,7 +14,7 @@ A floating chat logger that can be customized in size, color, and filters. Does 
 - Adjust size by grabbing the bottom or sides
 - Right click the top bar to select filters
 - Menus to customize just about everything
-- Position, inventory, experience, JP, and merit counts are available
+- Position, inventory, experience, JP, merit, EXP/minute, and CP/minute counts are available
 - Auto blocking messages in the game's window logs has been enabled with a new "Log Blocking" tab for Limit Points, EXP, Capacity Points, Gil, Merit Points, Job Points, EXP/CP/LP Chains, each type of chat, system messages, RoE messages, and Sparks of Eminence messages. No need to disable anything manually in game (Big thanks to Genesis for the blocking logic in RoEBeGone)
 - Autotranslate for items and key items added
 - Timestamps can be toggled on and off
@@ -30,7 +30,7 @@ A floating chat logger that can be customized in size, color, and filters. Does 
 
 | Created by | [Harfainx](https://github.com/Harfainx) |
 | :--- | :--- 
-| Version | 1.1.0 |
+| Version | 1.2.0 |
 
 ** Information **
 
@@ -47,6 +47,26 @@ A floating item logger that watches inventory, treasure pool, and recent drops.
 | Screenshot | |
 | :--- | :--- 
 | Main | ![Main Window](/images/ItemLog/ItemLog-MainAndSettings.png) |
+
+## DamageLog ##
+
+| Created by | [Harfainx](https://github.com/Harfainx) |
+| :--- | :--- 
+| Version | 1.1.0 |
+
+** Information **
+
+A floating damage logger that watches damage from the main person or the whole party.
+
+- Drag and drop to your location of choice
+- Adjust size by grabbing the bottom or sides
+- Right click the top bar to select option
+- Menu to customize just about everything
+- Track total damage, DPS, melee, critial, misses, weaponskills, abilities, and spell damage
+
+| Screenshot | |
+| :--- | :--- 
+| Main | ![Main Window](/images/DamageLog/DamageLog-Main.png) |
 
 -----
 

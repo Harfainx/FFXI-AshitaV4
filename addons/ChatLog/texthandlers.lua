@@ -128,17 +128,27 @@ function M.HandleIncomingText(e, settings, dataModule, configModule)
     end
 
     -- Handle Chat Blocking (cancelling the game's text event)
-    local baseMode = e.mode % 256;
     if settings.chat.blockedModes and settings.chat.blockedModes[baseMode] then
         e.blocked = true;
     end
 
-    -- Handle Advanced Blocking (Patterns)
+    -- Handle Advanced Blocking & Metric Extraction
     if baseMode == 127 and settings.chat.blockRoE then
         e.blocked = true;
     elseif baseMode == 131 or baseMode == 121 then
         local msg = e.message:strip_colors():strip_translate(true):lower();
         local p = settings.chat.blockPatterns;
+
+        -- Extract Metrics
+        local exp = msg:match("(%d+) experience points");
+        if not exp then exp = msg:match("(%d+) limit points"); end
+        if exp then dataModule.AddExp(tonumber(exp)); end
+        
+        local cp = msg:match("(%d+) capacity points");
+        if not cp then cp = msg:match("(%d+) capacity point"); end
+        if cp then dataModule.AddCp(tonumber(cp)); end
+
+        -- Blocking
         if p.exp and msg:contains('gains') and msg:contains('experience points') then e.blocked = true; end
         if p.lp and msg:contains('gains') and msg:contains('limit points') then e.blocked = true; end
         if p.cp and msg:contains('gains') and (msg:contains('capacity points') or msg:contains('capacity point')) then e.blocked = true; end

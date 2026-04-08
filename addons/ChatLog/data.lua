@@ -40,4 +40,24 @@ function M.Cleanup()
     M.Clear();
 end
 
+M.metrics = {
+    exp = { total = 0, start = 0 },
+    cp = { total = 0, start = 0 }
+};
+
+function M.AddExp(amount)
+    if M.metrics.exp.start == 0 then M.metrics.exp.start = os.time(); end
+    M.metrics.exp.total = M.metrics.exp.total + amount;
+end
+
+function M.AddCp(amount)
+    if M.metrics.cp.start == 0 then M.metrics.cp.start = os.time(); end
+    M.metrics.cp.total = M.metrics.cp.total + amount;
+end
+
+function M.ResetMetrics()
+    M.metrics.exp = { total = 0, start = 0 };
+    M.metrics.cp = { total = 0, start = 0 };
+end
+
 return M;

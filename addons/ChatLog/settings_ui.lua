@@ -51,8 +51,8 @@ function M.Draw(settings)
         if ImGuiCol_FrameBgActive then imgui.PushStyleColor(ImGuiCol_FrameBgActive, tCol); popCount = popCount + 1; end
 
         -- Legacy Index Surgical Strikes (Indices likely to be the "Old Red" culprits)
-        -- 36=TabUnfocused, 16=ScrollbarHover
-        local indices = { 21, 22, 23, 26, 36, 42, 43, 44, 55, 56, 57, 58, 59 };
+        -- Surgical strikes for indices (7=FrameBg, 25-27=ResizeGrip, 28-32=Tabs, etc.)
+        local indices = { 7, 8, 9, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 36, 42, 43, 44, 55, 56, 57, 58, 59 };
         for _, idx in ipairs(indices) do
             imgui.PushStyleColor(idx, tCol);
             popCount = popCount + 1;
@@ -85,31 +85,41 @@ function M.Draw(settings)
     end
     
     -- Text Color (Index 0)
--- ... (skipping some logic for context but keeping the structure)
+    if winSettings.systemTextColor then
+        imgui.PushStyleColor(ImGuiCol_Text or 0, winSettings.systemTextColor);
+        popCount = popCount + 1;
+    end
+
+    local sFlags = bit.bor(ImGuiWindowFlags_NoSavedSettings or 0, ImGuiWindowFlags_NoCollapse or 32);
     imgui.SetNextWindowSize({ 420, 500 }, ImGuiCond_FirstUseEver);
     if imgui.Begin("ChatLog Settings", M.isOpen, sFlags) then
         if imgui.BeginTabBar("SettingsTabs") then
             -- Tab: Appearance
             if imgui.BeginTabItem("Appearance") then
                 imgui.Text("Transparency");
-                local bgOpacity = { settings.window.bgColor[4] };
-                if imgui.SliderFloat("Window##Opacity", bgOpacity, 0.0, 1.0) then
-                    settings.window.bgColor[4] = bgOpacity[1];
-                    settings.saveRequired = true;
-                end
-                local innerOpacity = { settings.window.innerBgColor[4] };
-                if imgui.SliderFloat("Inner##Opacity", innerOpacity, 0.0, 1.0) then
-                    settings.window.innerBgColor[4] = innerOpacity[1];
-                    settings.saveRequired = true;
-                end
                 local titleOpacity = { settings.window.titleBarColor[4] };
-                if imgui.SliderFloat("Title Bar##Opacity", titleOpacity, 0.0, 1.0) then
+                if imgui.SliderFloat("Title Bar##Alpha", titleOpacity, 0.0, 1.0) then
                     settings.window.titleBarColor[4] = titleOpacity[1];
                     settings.saveRequired = true;
                 end
                 local accentOpacity = { settings.window.accentColor[4] };
-                if imgui.SliderFloat("Accent##Opacity", accentOpacity, 0.0, 1.0) then
+                if imgui.SliderFloat("Accent##Alpha", accentOpacity, 0.0, 1.0) then
                     settings.window.accentColor[4] = accentOpacity[1];
+                    settings.saveRequired = true;
+                end
+                local bgOpacity = { settings.window.bgColor[4] };
+                if imgui.SliderFloat("Window##Alpha", bgOpacity, 0.0, 1.0) then
+                    settings.window.bgColor[4] = bgOpacity[1];
+                    settings.saveRequired = true;
+                end
+                local innerOpacity = { settings.window.innerBgColor[4] };
+                if imgui.SliderFloat("Inner##Alpha", innerOpacity, 0.0, 1.0) then
+                    settings.window.innerBgColor[4] = innerOpacity[1];
+                    settings.saveRequired = true;
+                end
+                local systemOpacity = { settings.window.systemTextColor[4] };
+                if imgui.SliderFloat("System Text##Alpha", systemOpacity, 0.0, 1.0) then
+                    settings.window.systemTextColor[4] = systemOpacity[1];
                     settings.saveRequired = true;
                 end
 
@@ -117,23 +127,22 @@ function M.Draw(settings)
                 imgui.Text("Colors");
                 if imgui.ColorEdit4("Title Bar##Color", settings.window.titleBarColor) then settings.saveRequired = true; end
                 if imgui.ColorEdit4("Accent##Color", settings.window.accentColor) then settings.saveRequired = true; end
-                if imgui.ColorEdit4("System Text##Color", settings.window.systemTextColor) then settings.saveRequired = true; end
                 if imgui.ColorEdit4("Window##Color", settings.window.bgColor) then settings.saveRequired = true; end
                 if imgui.ColorEdit4("Inner##Color", settings.window.innerBgColor) then settings.saveRequired = true; end
-                if imgui.ColorEdit4("Position##Color", settings.window.posColor) then settings.saveRequired = true; end
-                if imgui.ColorEdit4("Inventory##Color", settings.window.invTextColor) then settings.saveRequired = true; end
+                if imgui.ColorEdit4("System Text##Color", settings.window.systemTextColor) then settings.saveRequired = true; end
 
                 imgui.Separator();
                 imgui.Text("Points");
                 local se = { settings.window.showEXP };
                 if imgui.Checkbox("Show Experience Points", se) then settings.window.showEXP = se[1]; settings.saveRequired = true; end
-                if imgui.ColorEdit4("EXP Color", settings.window.expColor) then settings.saveRequired = true; end
                 local sj = { settings.window.showJP };
                 if imgui.Checkbox("Show Job Points", sj) then settings.window.showJP = sj[1]; settings.saveRequired = true; end
-                if imgui.ColorEdit4("JP Color", settings.window.jpColor) then settings.saveRequired = true; end
                 local sm = { settings.window.showMerits };
                 if imgui.Checkbox("Show Merit Points", sm) then settings.window.showMerits = sm[1]; settings.saveRequired = true; end
-                if imgui.ColorEdit4("Merit Color", settings.window.meritColor) then settings.saveRequired = true; end
+                local sem = { settings.window.showExpm };
+                if imgui.Checkbox("Show EXP per Minute", sem) then settings.window.showExpm = sem[1]; settings.saveRequired = true; end
+                local scm = { settings.window.showCpm };
+                if imgui.Checkbox("Show CP per Minute", scm) then settings.window.showCpm = scm[1]; settings.saveRequired = true; end
 
                 imgui.Separator();
                 imgui.Text("Chat");
@@ -181,7 +190,7 @@ function M.Draw(settings)
                         settings.saveRequired = true;
                     end
                 end
-                if imgui.BeginChild("ChatColorsScroll", { 0, 0 }, 1) then
+                if imgui.BeginChild("ChatColorsScroll", { 0, 350 }, 1) then
                     ColorWidget("Say", 9, 1);
                     ColorWidget("Party", 13, 5);
                     ColorWidget("Linkshell", 14, 6);
@@ -201,7 +210,7 @@ function M.Draw(settings)
             if imgui.BeginTabItem("Log Blocking") then
                 imgui.TextWrapped("Block messages from the original game log window.");
                 imgui.Separator();
-                if imgui.BeginChild("BlockingScroll", { 0, 0 }, 1) then
+                if imgui.BeginChild("BlockingScroll", { 0, 350 }, 1) then
                     local function BlockToggle(label, mode, syncMode)
                         local blk = { settings.chat.blockedModes[mode] };
                         if imgui.Checkbox(label, blk) then
@@ -257,6 +266,11 @@ function M.Draw(settings)
             end
 
             imgui.EndTabBar();
+        end
+        
+        imgui.Separator();
+        if imgui.Button("Save Settings") then
+            require('config').SaveSettings();
         end
         imgui.End();
     end

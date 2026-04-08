@@ -109,9 +109,14 @@ function M.DrawWindow(settings, messages)
         end
         
         -- Right-Click Menu
+        imgui.SetNextWindowSizeConstraints({ 400, -1 }, { 800, -1 });
         if imgui.BeginPopupContextWindow("ChatLogSettings", 1) then
             if imgui.MenuItem("Settings...") then require('settings_ui').Open(); end
             imgui.Separator();
+
+            imgui.Columns(2, "SettingsCols", false);
+            
+            -- Column 1: Channels
             imgui.Text("Channel Toggles");
             imgui.Separator();
             
@@ -128,39 +133,32 @@ function M.DrawWindow(settings, messages)
             ModeToggle("LS2", {213, 214}); ModeToggle("Tell", {4, 12}); ModeToggle("Shout", {10});
             ModeToggle("Yell", {3, 11}); ModeToggle("Emotes", {15, 7}); ModeToggle("System", {123});
             ModeToggle("Secondary System", {121});
+
+            imgui.NextColumn();
+
+            -- Column 2: Display
+            imgui.Text("Display Toggles");
             imgui.Separator();
-            local stPos = { winSettings.showPosition };
-            if imgui.Checkbox("Display Position", stPos) then
-                winSettings.showPosition = stPos[1];
-                settings.saveRequired = true;
+
+            local function DisplayToggle(label, key, parent)
+                local target = parent or winSettings;
+                local st = { target[key] };
+                if imgui.Checkbox(label .. "##toggle", st) then
+                    target[key] = st[1];
+                    settings.saveRequired = true;
+                end
             end
-            local stInv = { winSettings.showInventory };
-            if imgui.Checkbox("Display Inventory", stInv) then
-                winSettings.showInventory = stInv[1];
-                settings.saveRequired = true;
-            end
-            local stEXP = { winSettings.showEXP };
-            if imgui.Checkbox("Display EXP", stEXP) then
-                winSettings.showEXP = stEXP[1];
-                settings.saveRequired = true;
-            end
-            local stJP = { winSettings.showJP };
-            if imgui.Checkbox("Display Job Points", stJP) then
-                winSettings.showJP = stJP[1];
-                settings.saveRequired = true;
-            end
-            local stMP = { winSettings.showMerits };
-            if imgui.Checkbox("Display Merit Points", stMP) then
-                winSettings.showMerits = stMP[1];
-                settings.saveRequired = true;
-            end
-            imgui.Separator();
-            local stTime = { settings.chat.showTimestamps };
-            if imgui.Checkbox("Display Timestamps", stTime) then
-                settings.chat.showTimestamps = stTime[1];
-                settings.saveRequired = true;
-            end
-            
+
+            DisplayToggle("Position", "showPosition");
+            DisplayToggle("Inventory", "showInventory");
+            DisplayToggle("EXP", "showEXP");
+            DisplayToggle("Job Points", "showJP");
+            DisplayToggle("Merit Points", "showMerits");
+            DisplayToggle("EXP/m", "showExpm");
+            DisplayToggle("CP/m", "showCpm");
+            DisplayToggle("Timestamps", "showTimestamps", settings.chat);
+
+            imgui.Columns(1);
             imgui.EndPopup();
         end
 
@@ -175,7 +173,7 @@ function M.DrawWindow(settings, messages)
             if ent and part then
                 local idx = part:GetMemberTargetIndex(0);
                 if idx ~= 0 then
-                    table.insert(row1, { color = winSettings.posColor, text = string.format("Pos: %.2f %.2f %.2f", ent:GetLocalPositionX(idx), ent:GetLocalPositionY(idx), ent:GetLocalPositionZ(idx)) });
+                    table.insert(row1, { color = winSettings.systemTextColor, text = string.format("Pos: %.2f %.2f %.2f", ent:GetLocalPositionX(idx), ent:GetLocalPositionY(idx), ent:GetLocalPositionZ(idx)) });
                 end
             end
         end
@@ -186,13 +184,13 @@ function M.DrawWindow(settings, messages)
             if inv then
                 local c, m = inv:GetContainerCount(0), inv:GetContainerCountMax(0);
                 local perc = (m > 0) and (c/m*100) or 0;
-                local ic = winSettings.invTextColor;
+                local ic = winSettings.systemTextColor;
                 if winSettings.showInvThresholds then
                     ic = {0.1, 1, 0.1, 1}; -- Green
                     if perc >= (winSettings.invRedThreshold or 85) then ic = {1, 0.1, 0.1, 1};
                     elseif perc >= (winSettings.invYellowThreshold or 65) then ic = {1, 1, 0.1, 1}; end
                 end
-                table.insert(row1, { labelColor = winSettings.invTextColor, label = "Inv: ", color = ic, text = string.format("%d/%d", c, m) });
+                table.insert(row1, { labelColor = winSettings.systemTextColor, label = "Inv: ", color = ic, text = string.format("%d/%d", c, m) });
             end
         end
 
@@ -202,19 +200,35 @@ function M.DrawWindow(settings, messages)
             if player then
                 local expCur = player:GetExpCurrent();
                 local expTotal = player:GetExpNeeded();
-                table.insert(row2, { color = winSettings.expColor, text = string.format("EXP: %d/%d", expCur, expTotal) });
+                table.insert(row2, { color = winSettings.systemTextColor, text = string.format("EXP: %d/%d", expCur, expTotal) });
             end
         end
         if winSettings.showJP then
             local player = AshitaCore:GetMemoryManager():GetPlayer();
             if player then
-                table.insert(row2, { color = winSettings.jpColor, text = string.format("JP: %d", player:GetJobPoints(player:GetMainJob())) });
+                table.insert(row2, { color = winSettings.systemTextColor, text = string.format("JP: %d", player:GetJobPoints(player:GetMainJob())) });
             end
         end
         if winSettings.showMerits then
             local player = AshitaCore:GetMemoryManager():GetPlayer();
             if player then
-                table.insert(row2, { color = winSettings.meritColor, text = string.format("Merits: %d", player:GetMeritPoints()) });
+                table.insert(row2, { color = winSettings.systemTextColor, text = string.format("Merits: %d", player:GetMeritPoints()) });
+            end
+        end
+
+        -- Row 3 Items (EXP/m, CP/m)
+        local row3 = {};
+        if winSettings.showExpm or winSettings.showCpm then
+            local now = os.time();
+            if winSettings.showExpm then
+                local dur = (data.metrics.exp.start > 0) and (now - data.metrics.exp.start) / 60 or 0;
+                local rate = (dur > 0) and math.floor(data.metrics.exp.total / dur) or 0;
+                table.insert(row3, { color = winSettings.systemTextColor, text = string.format("EXP/m: %d", rate) });
+            end
+            if winSettings.showCpm then
+                local dur = (data.metrics.cp.start > 0) and (now - data.metrics.cp.start) / 60 or 0;
+                local rate = (dur > 0) and math.floor(data.metrics.cp.total / dur) or 0;
+                table.insert(row3, { color = winSettings.systemTextColor, text = string.format("CP/m: %d", rate) });
             end
         end
 
@@ -238,6 +252,13 @@ function M.DrawWindow(settings, messages)
 
         if renderRow(row1) then imgui.Separator(); end
         if renderRow(row2) then imgui.Separator(); end
+        if (winSettings.showExpm or winSettings.showCpm) then
+            imgui.PushID("MetricsClear");
+            if imgui.Button("C") then data.ResetMetrics(); end
+            imgui.PopID();
+            imgui.SameLine();
+            if renderRow(row3) then imgui.Separator(); end
+        end
 
         -- Messages region
         imgui.BeginChild("ChatMessagesRegion");
