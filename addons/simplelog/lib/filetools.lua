@@ -31,10 +31,12 @@ local CreateNewProfile = function(path, file_name)
 	
 	local src_profile_path = ('%saddons\\simplelog\\%s.lua'):fmt(AshitaCore:GetInstallPath(), file_name);
 	local src_profile_file = io.open(src_profile_path, 'r');
-	local src_profile_data = src_profile_file:read('*all');
-	file:write(src_profile_data);
+	if src_profile_file then
+		local src_profile_data = src_profile_file:read('*all');
+		file:write(src_profile_data);
+		src_profile_file:close();
+	end
 	file:close();
-	src_profile_file:close();
 	return true;
 end
 
@@ -55,10 +57,12 @@ local OverwriteProfile = function (path, source_path)
     end
 
 	local src_profile_file = io.open(source_path, 'r');
-	local src_profile_data = src_profile_file:read('*all');
-	file:write(src_profile_data);
+	if src_profile_file then
+		local src_profile_data = src_profile_file:read('*all');
+		file:write(src_profile_data);
+		src_profile_file:close();
+	end
 	file:close();
-	src_profile_file:close();
 	return true;
 end
 

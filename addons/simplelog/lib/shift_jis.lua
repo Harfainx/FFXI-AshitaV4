@@ -92,6 +92,7 @@ function UTF8toSJIS:UTF8_to_SJIS_str_cnv(strUTF8) -- return strSJIS, sj_length
 		end
 		--coroutine.sleep(0)
 	end
+	f2:close()
 	return string.char(unpack(sjis_byte))--, sj_cnt-1
 end
 
