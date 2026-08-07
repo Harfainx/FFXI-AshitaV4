@@ -30,7 +30,7 @@ A floating chat logger that can be customized in size, color, and filters. Does 
 
 | Created by | [Harfainx](https://github.com/Harfainx) |
 | :--- | :--- 
-| Version | 1.2.0 |
+| Version | 1.2.1 |
 
 ** Information **
 
