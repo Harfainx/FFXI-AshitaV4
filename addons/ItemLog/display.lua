@@ -159,10 +159,10 @@ function M.DrawWindow(settings, dataModule)
 
     if popCount > 0 then imgui.PopStyleColor(popCount); end
 
-    -- Auto-save if window was moved/resized
+    -- Auto-save if window was moved/resized or settings changed
     if settings.saveRequired then
         settings.saveRequired = false;
-        require('config').save();
+        require('config').SaveSettings();
     end
 end
 

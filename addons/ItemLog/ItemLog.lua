@@ -23,7 +23,8 @@ local M = {
 };
 
 ashita.events.register('load', 'load_cb', function ()
-    M.settings = config.load();
+    config.Initialize();
+    M.settings = config.GetSettings();
     data.Initialize(M.settings);
     display.Initialize(M.settings);
     M.initialized = true;
@@ -31,7 +32,7 @@ end);
 
 ashita.events.register('unload', 'unload_cb', function ()
     if not M.initialized then return end;
-    config.save();
+    config.SaveSettings();
 end);
 
 ashita.events.register('d3d_present', 'd3d_present_cb', function ()

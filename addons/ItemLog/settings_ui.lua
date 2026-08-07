@@ -82,7 +82,10 @@ function M.DrawSettings(settings)
                 imgui.Separator();
                 local function TransSlider(label, color)
                     local alpha = { color[4] };
-                    if imgui.SliderFloat(label, alpha, 0.0, 1.0) then color[4] = alpha[1]; end
+                    if imgui.SliderFloat(label, alpha, 0.0, 1.0) then
+                        color[4] = alpha[1];
+                        settings.saveRequired = true;
+                    end
                 end
                 TransSlider("Title Bar##Alpha", winSettings.titleBarColor);
                 TransSlider("Accent##Alpha", winSettings.accentColor);
@@ -94,29 +97,44 @@ function M.DrawSettings(settings)
                 -- 2. Colors Section
                 imgui.Text("Colors");
                 imgui.Separator();
-                imgui.ColorEdit4("Title Bar##Color", winSettings.titleBarColor);
-                imgui.ColorEdit4("Accent##Color", winSettings.accentColor);
-                imgui.ColorEdit4("Window##Color", winSettings.windowColor);
-                imgui.ColorEdit4("Inner##Color", winSettings.innerColor);
-                imgui.ColorEdit4("System Text##Color", winSettings.systemTextColor);
+                if imgui.ColorEdit4("Title Bar##Color", winSettings.titleBarColor) then settings.saveRequired = true; end
+                if imgui.ColorEdit4("Accent##Color", winSettings.accentColor) then settings.saveRequired = true; end
+                if imgui.ColorEdit4("Window##Color", winSettings.windowColor) then settings.saveRequired = true; end
+                if imgui.ColorEdit4("Inner##Color", winSettings.innerColor) then settings.saveRequired = true; end
+                if imgui.ColorEdit4("System Text##Color", winSettings.systemTextColor) then settings.saveRequired = true; end
 
                 imgui.Spacing();
                 -- 3. Drop Display Section
                 imgui.Text("Drop Display");
                 imgui.Separator();
                 local showOthers = { logSettings.showOtherDrops };
-                if imgui.Checkbox("Show Others' Drops", showOthers) then logSettings.showOtherDrops = showOthers[1]; end
+                if imgui.Checkbox("Show Others' Drops", showOthers) then
+                    logSettings.showOtherDrops = showOthers[1];
+                    settings.saveRequired = true;
+                end
+                
+                local showGil = { (logSettings.showGil == nil) or logSettings.showGil };
+                if imgui.Checkbox("Show Gil Drops", showGil) then
+                    logSettings.showGil = showGil[1];
+                    settings.saveRequired = true;
+                end
                 
                 imgui.Text("Max Drop History");
                 local maxDrops = { logSettings.maxDrops };
-                if imgui.SliderInt("##MaxDropHistory", maxDrops, 1, 50) then logSettings.maxDrops = maxDrops[1]; end
+                if imgui.SliderInt("##MaxDropHistory", maxDrops, 1, 50) then
+                    logSettings.maxDrops = maxDrops[1];
+                    settings.saveRequired = true;
+                end
 
                 imgui.Spacing();
                 -- 4. Alert Thresholds Section
                 imgui.Text("Alert Thresholds");
                 imgui.Separator();
                 local showThresh = { winSettings.showInvThresholds };
-                if imgui.Checkbox("Use Alert Thresholds", showThresh) then winSettings.showInvThresholds = showThresh[1]; end
+                if imgui.Checkbox("Use Alert Thresholds", showThresh) then
+                    winSettings.showInvThresholds = showThresh[1];
+                    settings.saveRequired = true;
+                end
                 
                 local yellowT = { winSettings.invYellowThreshold };
                 if imgui.SliderInt("Yellow %", yellowT, 1, 99) then 
@@ -124,6 +142,7 @@ function M.DrawSettings(settings)
                     if winSettings.invYellowThreshold >= winSettings.invRedThreshold then
                         winSettings.invRedThreshold = math.min(100, winSettings.invYellowThreshold + 1);
                     end
+                    settings.saveRequired = true;
                 end
                 
                 local redT = { winSettings.invRedThreshold };
@@ -132,6 +151,7 @@ function M.DrawSettings(settings)
                     if winSettings.invRedThreshold <= winSettings.invYellowThreshold then
                         winSettings.invYellowThreshold = math.max(0, winSettings.invRedThreshold - 1);
                     end
+                    settings.saveRequired = true;
                 end
 
                 imgui.EndTabItem();
@@ -143,10 +163,16 @@ function M.DrawSettings(settings)
                 imgui.Separator();
                 
                 local b121 = { logSettings.blockMode121 };
-                if imgui.Checkbox("Block Item Drops (Mode 121 - Pool)", b121) then logSettings.blockMode121 = b121[1]; end
+                if imgui.Checkbox("Block Item Drops (Mode 121 - Pool)", b121) then
+                    logSettings.blockMode121 = b121[1];
+                    settings.saveRequired = true;
+                end
                 
                 local b127 = { logSettings.blockMode127 };
-                if imgui.Checkbox("Block Items Obtained (Mode 127 - Inv)", b127) then logSettings.blockMode127 = b127[1]; end
+                if imgui.Checkbox("Block Items Obtained (Mode 127 - Inv)", b127) then
+                    logSettings.blockMode127 = b127[1];
+                    settings.saveRequired = true;
+                end
 
                 imgui.EndTabItem();
             end
@@ -155,8 +181,7 @@ function M.DrawSettings(settings)
         
         imgui.Separator();
         if imgui.Button("Save Settings") then
-            local config = require('config');
-            config.save();
+            require('config').SaveSettings();
         end
         imgui.End();
     end

@@ -23,35 +23,57 @@ local default_settings = {
         maxDrops = 20,
         blockMode121 = false,
         blockMode127 = false,
-        showOtherDrops = false
+        showOtherDrops = false,
+        showGil = true
     },
     showSettings = false
 };
 
+local current_settings = nil;
+
 local M = {};
 
-function M.load()
-    local s = settings.load(default_settings);
+function M.Initialize()
+    current_settings = settings.load(default_settings);
     
     -- Sync any missing keys if updating from older version
-    if s.window.invTextColor then 
-        s.window.inventoryColor = s.window.invTextColor;
-        s.window.invTextColor = nil; 
+    if current_settings.window.invTextColor then 
+        current_settings.window.inventoryColor = current_settings.window.invTextColor;
+        current_settings.window.invTextColor = nil; 
     end
-    if s.window.bgColor then 
-        s.window.windowColor = s.window.bgColor;
-        s.window.bgColor = nil; 
+    if current_settings.window.bgColor then 
+        current_settings.window.windowColor = current_settings.window.bgColor;
+        current_settings.window.bgColor = nil; 
     end
-    if s.window.innerBgColor then 
-        s.window.innerColor = s.window.innerBgColor;
-        s.window.innerBgColor = nil; 
+    if current_settings.window.innerBgColor then 
+        current_settings.window.innerColor = current_settings.window.innerBgColor;
+        current_settings.window.innerBgColor = nil; 
+    end
+
+    if current_settings.log.showGil == nil then
+        current_settings.log.showGil = true;
     end
     
-    return s;
+    return current_settings;
+end
+
+function M.GetSettings()
+    return current_settings;
+end
+
+function M.SaveSettings()
+    if current_settings then
+        settings.save();
+    end
+end
+
+-- Aliases for backward compatibility
+function M.load()
+    return M.Initialize();
 end
 
 function M.save()
-    settings.save();
+    M.SaveSettings();
 end
 
 return M;
