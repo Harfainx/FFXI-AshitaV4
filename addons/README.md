@@ -4,11 +4,11 @@
 
 | Created by | [Harfainx](https://github.com/Harfainx) |
 | :--- | :--- 
-| Version | 2.3.0 |
+| Version | 2.3.2 |
 
 ** Information **
 
-A floating chat logger that can be customized in size, color, and filters. Does not currently capture unity messages, and probably some others.
+A floating chat logger that can be customized in size, color, and filters.
 
 - Drag and drop to your location of choice
 - Adjust size by grabbing the bottom or sides
@@ -30,7 +30,7 @@ A floating chat logger that can be customized in size, color, and filters. Does 
 
 | Created by | [Harfainx](https://github.com/Harfainx) |
 | :--- | :--- 
-| Version | 1.2.1 |
+| Version | 1.2.2 |
 
 ** Information **
 
@@ -52,7 +52,7 @@ A floating item logger that watches inventory, treasure pool, and recent drops.
 
 | Created by | [Harfainx](https://github.com/Harfainx) |
 | :--- | :--- 
-| Version | 1.1.0 |
+| Version | 1.1.1 |
 
 ** Information **
 
