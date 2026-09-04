@@ -1,22 +1,22 @@
 require('common');
-local chat = require('chat');
-local config = require('config');
-local data = require('data');
+local chat         = require('chat');
+local config       = require('config');
+local data         = require('data');
 local texthandlers = require('texthandlers');
-local display = nil; -- Loaded later to avoid circular dependencies
+local display      = nil; -- Loaded later to avoid circular dependencies
 
-addon.name    = 'DamageLog';
-addon.author  = 'Harfainx';
-addon.version = '1.1.0';
-addon.desc    = 'Tracks damage dealt by the player and party with DPS calculations';
-addon.link    = '';
+addon.name         = 'DamageLog';
+addon.author       = 'Harfainx';
+addon.version      = '1.1.1';
+addon.desc         = 'Tracks damage dealt by the player and party with DPS calculations';
+addon.link         = '';
 
 -- Module state
-local M = {
+local M            = {
     initialized = false
 };
 
-ashita.events.register('load', 'load_cb', function ()
+ashita.events.register('load', 'load_cb', function()
     config.Initialize();
     data.Initialize();
 
@@ -26,12 +26,14 @@ ashita.events.register('load', 'load_cb', function ()
     M.initialized = true;
 end);
 
-ashita.events.register('unload', 'unload_cb', function ()
+ashita.events.register('unload', 'unload_cb', function()
     if not M.initialized then return end;
     config.SaveSettings();
+    if display and display.Cleanup then display.Cleanup(); end
+    data.Clear();
 end);
 
-ashita.events.register('command', 'command_cb', function (e)
+ashita.events.register('command', 'command_cb', function(e)
     if not M.initialized then return end;
     local args = e.command:args();
     if (#args > 0 and (args[1]:lower() == '/damagelog' or args[1]:lower() == '/dml')) then
@@ -49,12 +51,12 @@ ashita.events.register('command', 'command_cb', function (e)
     end
 end);
 
-ashita.events.register('packet_in', 'packet_in_cb', function (e)
+ashita.events.register('packet_in', 'packet_in_cb', function(e)
     if not M.initialized then return end;
     texthandlers.HandleIncomingPacket(e, config.GetSettings());
 end);
 
-ashita.events.register('d3d_present', 'd3d_present_cb', function ()
+ashita.events.register('d3d_present', 'd3d_present_cb', function()
     if not M.initialized then return end;
     display.DrawWindow(config.GetSettings(), data);
 end);

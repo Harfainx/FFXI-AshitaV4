@@ -36,6 +36,15 @@ function M.Initialize()
     current_settings = settings.load(default_settings);
 end
 
+settings.register('settings', 'settings_update', function(s)
+    if s ~= nil then
+        current_settings = s;
+        if M.onSettingsUpdated then
+            M.onSettingsUpdated(current_settings);
+        end
+    end
+end);
+
 function M.GetSettings()
     return current_settings;
 end

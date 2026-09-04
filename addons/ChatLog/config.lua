@@ -31,7 +31,7 @@ local default_settings = {
         maxMessages = 100,
         showTimestamps = true,
         -- Chat modes config
-        -- 9=Say, 10=Shout, 11=Tell(incoming?), 12=Tell(outgoing?), 13=Party, 14=Linkshell, 26=Yell, 214=Linkshell2 (Mode might vary, user can edit these if needed)
+        -- 9=Say, 10=Shout, 11=Tell(incoming?), 12=Tell(outgoing?), 13=Party, 14=Linkshell, 26=Yell, 214=Linkshell2, 211=Unity
         enabledModes = {
             [1] = true,   -- Say (Out)
             [9] = true,   -- Say (In)
@@ -46,6 +46,8 @@ local default_settings = {
             [11] = true,  -- Yell (In)
             [213] = true, -- Linkshell2 (Out)
             [214] = true, -- Linkshell2 (In)
+            [211] = true, -- Unity (In)
+            [212] = true, -- Unity (Out)
             [123] = true, -- Console/Party System
             [121] = true, -- Additional System messages (e.g. 16505 % 256)
             [15] = true,  -- Emotes (Standard)
@@ -57,6 +59,7 @@ local default_settings = {
             [5] = { 0.67, 0.84, 0.9, 1.0 },     [13] = { 0.67, 0.84, 0.9, 1.0 },
             [6] = { 0.1, 0.8, 0.1, 1.0 },       [14] = { 0.1, 0.8, 0.1, 1.0 },
             [213] = { 0.1, 0.6, 0.4, 1.0 },     [214] = { 0.1, 0.6, 0.4, 1.0 },
+            [211] = { 0.85, 0.55, 0.3, 1.0 },   [212] = { 0.85, 0.55, 0.3, 1.0 },
             [4] = { 0.9, 0.5, 0.9, 1.0 },       [12] = { 0.9, 0.5, 0.9, 1.0 },
             [10] = { 1.0, 0.5, 0.0, 1.0 },
             [3] = { 1.0, 0.7, 0.0, 1.0 },       [11] = { 1.0, 0.7, 0.0, 1.0 },
@@ -67,8 +70,8 @@ local default_settings = {
             [1] = false, [9] = false, [5] = false, [13] = false,
             [6] = false, [14] = false, [10] = false, [4] = false,
             [12] = false, [3] = false, [11] = false, [213] = false,
-            [214] = false, [123] = false, [121] = false, [15] = false,
-            [7] = false
+            [214] = false, [211] = false, [212] = false, [123] = false,
+            [121] = false, [15] = false, [7] = false
         },
         blockRoE = false,
         blockPatterns = {
@@ -80,9 +83,56 @@ local default_settings = {
 
 local current_settings = nil;
 
+local function NormalizeKeys(tbl)
+    if not tbl then return; end
+    local updates = {};
+    for k, v in pairs(tbl) do
+        local numK = tonumber(k);
+        if numK and type(k) == 'string' then
+            updates[numK] = v;
+            tbl[k] = nil;
+        end
+    end
+    for k, v in pairs(updates) do
+        tbl[k] = v;
+    end
+end
+
+function M.Normalize(cfg)
+    if not cfg or not cfg.chat then return; end
+    
+    NormalizeKeys(cfg.chat.enabledModes);
+    NormalizeKeys(cfg.chat.customColors);
+    NormalizeKeys(cfg.chat.blockedModes);
+
+    if cfg.chat.enabledModes then
+        if cfg.chat.enabledModes[211] == nil then cfg.chat.enabledModes[211] = true; end
+        if cfg.chat.enabledModes[212] == nil then cfg.chat.enabledModes[212] = true; end
+    end
+    if cfg.chat.customColors then
+        if cfg.chat.customColors[211] == nil then cfg.chat.customColors[211] = { 0.85, 0.55, 0.3, 1.0 }; end
+        if cfg.chat.customColors[212] == nil then cfg.chat.customColors[212] = { 0.85, 0.55, 0.3, 1.0 }; end
+    end
+    if cfg.chat.blockedModes then
+        if cfg.chat.blockedModes[211] == nil then cfg.chat.blockedModes[211] = false; end
+        if cfg.chat.blockedModes[212] == nil then cfg.chat.blockedModes[212] = false; end
+    end
+end
+
 function M.Initialize()
     current_settings = settings.load(default_settings);
+    M.Normalize(current_settings);
 end
+
+settings.register('settings', 'settings_update', function(s)
+    if s ~= nil then
+        current_settings = s;
+        M.Normalize(current_settings);
+        if M.onSettingsUpdated then
+            M.onSettingsUpdated(current_settings);
+        end
+    end
+end);
 
 M.debugMode = false;
 

@@ -99,14 +99,15 @@ function M.DrawWindow(settings, messages)
     if imgui.Begin("ChatLog", true, sFlags) then
         if imgui.SetWindowFontScale then imgui.SetWindowFontScale(winSettings.fontScale); end
         
-        -- Sync Position/Size
+        -- Sync Position/Size (after frame 1 to avoid startup layout race)
         local pos = {imgui.GetWindowPos()};
         local size = {imgui.GetWindowSize()};
-        if pos[1] ~= winSettings.x or pos[2] ~= winSettings.y or size[1] ~= winSettings.width or size[2] ~= winSettings.height then
+        if M.readyForPosSync and (math.abs(pos[1] - winSettings.x) > 1 or math.abs(pos[2] - winSettings.y) > 1 or math.abs(size[1] - winSettings.width) > 1 or math.abs(size[2] - winSettings.height) > 1) then
             winSettings.x, winSettings.y = pos[1], pos[2];
             winSettings.width, winSettings.height = size[1], size[2];
             settings.saveRequired = true;
         end
+        M.readyForPosSync = true;
         
         -- Right-Click Menu
         imgui.SetNextWindowSizeConstraints({ 400, -1 }, { 800, -1 });
@@ -130,9 +131,9 @@ function M.DrawWindow(settings, messages)
             end
             
             ModeToggle("Say", {1, 9}); ModeToggle("Party", {5, 13}); ModeToggle("Linkshell", {6, 14});
-            ModeToggle("LS2", {213, 214}); ModeToggle("Tell", {4, 12}); ModeToggle("Shout", {10});
-            ModeToggle("Yell", {3, 11}); ModeToggle("Emotes", {15, 7}); ModeToggle("System", {123});
-            ModeToggle("Secondary System", {121});
+            ModeToggle("LS2", {213, 214}); ModeToggle("Unity", {211, 212}); ModeToggle("Tell", {4, 12});
+            ModeToggle("Shout", {10}); ModeToggle("Yell", {3, 11}); ModeToggle("Emotes", {15, 7});
+            ModeToggle("System", {123}); ModeToggle("Secondary System", {121});
 
             imgui.NextColumn();
 
@@ -277,18 +278,18 @@ function M.DrawWindow(settings, messages)
     if popCount > 0 then imgui.PopStyleColor(popCount); end
     if varCount > 0 then imgui.PopStyleVar(varCount); end
     
+    -- Draw Settings GUI
+    require('settings_ui').Draw(settings);
+
     -- Save settings dynamically if changed
     if settings.saveRequired then
         settings.saveRequired = false;
         require('config').SaveSettings();
     end
-
-    -- Draw Settings GUI
-    require('settings_ui').Draw(settings);
 end
 
 function M.Cleanup()
-    -- Any cleanup for display
+    M.readyForPosSync = false;
 end
 
 return M;

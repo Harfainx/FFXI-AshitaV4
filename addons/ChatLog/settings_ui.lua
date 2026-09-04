@@ -195,6 +195,7 @@ function M.Draw(settings)
                     ColorWidget("Party", 13, 5);
                     ColorWidget("Linkshell", 14, 6);
                     ColorWidget("Linkshell 2", 214, 213);
+                    ColorWidget("Unity", 211, 212);
                     ColorWidget("Tell", 12, 4);
                     ColorWidget("Shout", 10);
                     ColorWidget("Yell", 11, 3);
@@ -233,6 +234,7 @@ function M.Draw(settings)
                     BlockToggle("Block Party", 13, 5);
                     BlockToggle("Block Linkshell", 14, 6);
                     BlockToggle("Block Linkshell 2", 214, 213);
+                    BlockToggle("Block Unity", 211, 212);
                     BlockToggle("Block Tell", 12, 4);
                     BlockToggle("Block Shout", 10);
                     BlockToggle("Block Yell", 11, 3);

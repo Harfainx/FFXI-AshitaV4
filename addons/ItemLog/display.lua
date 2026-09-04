@@ -74,14 +74,15 @@ function M.DrawWindow(settings, dataModule)
 
     local mainFlags = 32; -- ImGuiWindowFlags_NoCollapse
     if imgui.Begin("ItemLog", true, mainFlags) then
-        -- Sync Position/Size back to settings so window position persists across reloads
+        -- Sync Position/Size back to settings so window position persists across reloads (after frame 1)
         local pos = {imgui.GetWindowPos()};
         local size = {imgui.GetWindowSize()};
-        if pos[1] ~= winSettings.x or pos[2] ~= winSettings.y or size[1] ~= winSettings.width or size[2] ~= winSettings.height then
+        if M.readyForPosSync and (math.abs(pos[1] - winSettings.x) > 1 or math.abs(pos[2] - winSettings.y) > 1 or math.abs(size[1] - winSettings.width) > 1 or math.abs(size[2] - winSettings.height) > 1) then
             winSettings.x, winSettings.y = pos[1], pos[2];
             winSettings.width, winSettings.height = size[1], size[2];
             settings.saveRequired = true;
         end
+        M.readyForPosSync = true;
 
         -- Right-Click Menu
         if imgui.BeginPopupContextWindow() then
@@ -89,11 +90,20 @@ function M.DrawWindow(settings, dataModule)
             imgui.Separator();
             
             local si = { winSettings.showInventory };
-            if imgui.Checkbox("Display Inventory", si) then winSettings.showInventory = si[1]; end
+            if imgui.Checkbox("Display Inventory", si) then
+                winSettings.showInventory = si[1];
+                settings.saveRequired = true;
+            end
             local sp = { winSettings.showPool };
-            if imgui.Checkbox("Display Pool", sp) then winSettings.showPool = sp[1]; end
+            if imgui.Checkbox("Display Pool", sp) then
+                winSettings.showPool = sp[1];
+                settings.saveRequired = true;
+            end
             local sd = { winSettings.showDrops };
-            if imgui.Checkbox("Display Drops", sd) then winSettings.showDrops = sd[1]; end
+            if imgui.Checkbox("Display Drops", sd) then
+                winSettings.showDrops = sd[1];
+                settings.saveRequired = true;
+            end
             imgui.EndPopup();
         end
 
@@ -164,6 +174,10 @@ function M.DrawWindow(settings, dataModule)
         settings.saveRequired = false;
         require('config').SaveSettings();
     end
+end
+
+function M.Cleanup()
+    M.readyForPosSync = false;
 end
 
 return M;

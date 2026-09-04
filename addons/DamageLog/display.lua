@@ -70,14 +70,15 @@ function M.DrawWindow(settings, dataModule)
     if imgui.Begin("DamageLog", true, flags) then
         if imgui.SetWindowFontScale then imgui.SetWindowFontScale(winSettings.fontScale); end
 
-        -- Sync Position/Size back to settings so window position persists across reloads
+        -- Sync Position/Size back to settings so window position persists across reloads (after frame 1)
         local pos = {imgui.GetWindowPos()};
         local size = {imgui.GetWindowSize()};
-        if pos[1] ~= winSettings.x or pos[2] ~= winSettings.y or size[1] ~= winSettings.width or size[2] ~= winSettings.height then
+        if M.readyForPosSync and (math.abs(pos[1] - winSettings.x) > 1 or math.abs(pos[2] - winSettings.y) > 1 or math.abs(size[1] - winSettings.width) > 1 or math.abs(size[2] - winSettings.height) > 1) then
             winSettings.x, winSettings.y = pos[1], pos[2];
             winSettings.width, winSettings.height = size[1], size[2];
             settings.saveRequired = true;
         end
+        M.readyForPosSync = true;
 
         -- Right-click popup
         if imgui.BeginPopupContextWindow() then
@@ -165,14 +166,18 @@ function M.DrawWindow(settings, dataModule)
     if popCount > 0 then imgui.PopStyleColor(popCount); end
     if varCount > 0 then imgui.PopStyleVar(varCount); end
 
-    -- Auto-save if window was moved/resized
+    -- Draw Settings GUI
+    require('settings_ui').Draw(settings);
+
+    -- Auto-save if window was moved/resized or settings changed
     if settings.saveRequired then
         settings.saveRequired = false;
         require('config').SaveSettings();
     end
+end
 
-    -- Draw Settings GUI
-    require('settings_ui').Draw(settings);
+function M.Cleanup()
+    M.readyForPosSync = false;
 end
 
 return M;
